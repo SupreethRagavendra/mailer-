@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Message Failed</title>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    body {
+       background: #f4f4f4;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      padding-top: 50px;
+    }
+    .container {
+      background: #ffffff;
+      max-width: 500px;
+      margin: auto;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #c62828;
+    }
+    .lottie-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="lottie-wrapper">
+      <lottie-player
+        src="animations\Error Fail animation.json"
+        background="transparent"
+        speed="1"
+        style="width: 250px; height: 250px;"
+        loop
+        autoplay>
+      </lottie-player>
+    </div>
+    <h2>Oops! Something went wrong</h2>
+    <p>We couldn't send your message right now. Please try again later.</p>
+  </div>
+</body>
+</html>
