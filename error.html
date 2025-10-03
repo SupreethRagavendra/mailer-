@@ -43,7 +43,28 @@
       </lottie-player>
     </div>
     <h2>Oops! Something went wrong</h2>
-    <p>We couldn't send your message right now. Please try again later.</p>
+    <div id="error-message">
+      <p>We couldn't send your message right now. Please try again later.</p>
+    </div>
+    <script>
+      // Get error reason from URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const reason = urlParams.get('reason');
+      
+      const errorMessages = {
+        'invalid_method': 'Invalid request method. Please use the contact form.',
+        'missing_fields': 'Please fill in all required fields.',
+        'invalid_email': 'Please enter a valid email address.',
+        'mail_failed': 'Email sending failed. Please try again later.',
+        'smtp_connection_failed': 'Unable to connect to email server. Please try again later.',
+        'authentication_failed': 'Email authentication failed. Please contact support.',
+        'invalid_address': 'Invalid email address format.'
+      };
+      
+      if (reason && errorMessages[reason]) {
+        document.getElementById('error-message').innerHTML = '<p>' + errorMessages[reason] + '</p>';
+      }
+    </script>
            <a href="https://aromaticrootqueen.vercel.app/"  style="color:#2e7d32; text-decoration: underline;">Back to Home</a> 
 
   </div>

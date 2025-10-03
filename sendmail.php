@@ -38,6 +38,12 @@ if (!filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
 $mail = new PHPMailer(true);
 
 try {
+    // Enable verbose debug output
+    $mail->SMTPDebug = 2; // Set to 0 for production
+    $mail->Debugoutput = function($str, $level) {
+        file_put_contents(__DIR__ . '/smtp_debug.log', date('Y-m-d H:i:s') . " - Level $level: $str\n", FILE_APPEND);
+    };
+    
     // SMTP Configuration
     $mail->isSMTP();
     $mail->Host       = 'smtp.gmail.com';
@@ -47,6 +53,15 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = 587;
     $mail->CharSet    = 'UTF-8';
+    
+    // Additional SMTP options for better compatibility
+    $mail->SMTPOptions = array(
+        'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        )
+    );
 
     // Set sender & recipient
     $mail->setFrom('aromaticrootq@gmail.com', 'Aromaticroot Queen');
@@ -111,8 +126,25 @@ HTML;
     exit;
 
 } catch (Exception $e) {
-    file_put_contents(__DIR__ . '/mail_errors.log', date('Y-m-d H:i:s') . ' - ' . $e->getMessage() . "\n", FILE_APPEND);
-    header("Location: error.html?reason=mail_failed");
+    $errorMessage = $e->getMessage();
+    $errorDetails = "Error: " . $errorMessage . "\n";
+    $errorDetails .= "File: " . $e->getFile() . "\n";
+    $errorDetails .= "Line: " . $e->getLine() . "\n";
+    $errorDetails .= "Trace: " . $e->getTraceAsString() . "\n";
+    
+    file_put_contents(__DIR__ . '/mail_errors.log', date('Y-m-d H:i:s') . " - " . $errorDetails . "\n", FILE_APPEND);
+    
+    // Determine specific error reason
+    $reason = 'mail_failed';
+    if (strpos($errorMessage, 'SMTP connect() failed') !== false) {
+        $reason = 'smtp_connection_failed';
+    } elseif (strpos($errorMessage, 'Authentication failed') !== false) {
+        $reason = 'authentication_failed';
+    } elseif (strpos($errorMessage, 'Invalid address') !== false) {
+        $reason = 'invalid_address';
+    }
+    
+    header("Location: error.html?reason=" . $reason);
     exit;
 }
 ?>
